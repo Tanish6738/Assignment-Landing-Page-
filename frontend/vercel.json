@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+        {
+            "source": "/api/:path*",
+            "destination": "https://snippets-two-navy.vercel.app/api/:path*"
+        }
+    ]
+}
