@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminService } from '../../services';
-import { Upload, Loader, ArrowLeft } from 'lucide-react';
+import { Loader, ArrowLeft, Image as ImageIcon } from 'lucide-react';
+import ImageCropper from '../ImageCropper';
 
 const ClientForm = () => {
   const navigate = useNavigate();
@@ -22,33 +23,6 @@ const ClientForm = () => {
       ...prev,
       [name]: value
     }));
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError('Image size should be less than 5MB');
-        return;
-      }
-
-      if (!file.type.startsWith('image/')) {
-        setError('Please select a valid image file');
-        return;
-      }
-
-      setFormData(prev => ({
-        ...prev,
-        image: file
-      }));
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-      setError('');
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -106,30 +80,40 @@ const ClientForm = () => {
         <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-[#C4A962] to-[#D4AF37]"></div>
         <div>
           <label className="block text-sm font-medium text-[#4A4A4A] mb-2">
-            Client Image *
+            Client Image * (450 × 350 recommended)
           </label>
-          <div className="flex items-center gap-4">
-            <label className="flex items-center gap-2 px-4 py-2 bg-[#F5EFE0] text-[#C4A962] rounded-lg cursor-pointer hover:bg-[#E8DCC4] transition-colors">
-              <Upload className="w-5 h-5" />
-              Choose Image
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
-            </label>
-            {formData.image && (
-              <span className="text-sm text-[#6B6B6B]">{formData.image.name}</span>
-            )}
-          </div>
-          {imagePreview && (
-            <div className="mt-4">
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="w-full h-64 object-cover rounded-lg border border-[#E8DCC4]"
-              />
+          {!imagePreview ? (
+            <ImageCropper
+              onCropComplete={(file, preview) => {
+                setFormData(prev => ({
+                  ...prev,
+                  image: file
+                }));
+                setImagePreview(preview);
+                setError('');
+              }}
+              aspectRatio={450 / 350}
+            />
+          ) : (
+            <div className="space-y-3">
+              <div className="relative rounded-xl overflow-hidden border-2 border-[#E8DCC4]">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="w-full h-64 object-cover"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setImagePreview('');
+                  setFormData(prev => ({ ...prev, image: null }));
+                }}
+                className="w-full px-4 py-2 bg-[#FFF5F5] text-[#D4534F] font-medium rounded-lg hover:bg-[#FFE5E5] transition-colors flex items-center justify-center gap-2"
+              >
+                <ImageIcon className="w-4 h-4" />
+                Change Image
+              </button>
             </div>
           )}
         </div>

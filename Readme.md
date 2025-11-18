@@ -35,6 +35,7 @@ A full-stack web application for managing a portfolio website with admin dashboa
 - Tailwind CSS 4
 - Vite
 - Lucide React (Icons)
+- React Image Crop (Image cropping)
 
 ### Backend
 - Node.js
@@ -148,49 +149,215 @@ Project/
 
 ```
 
+## Database Models
+
+### User Model
+```javascript
+{
+  name: String (required),
+  email: String (required, unique),
+  password: String (required, hashed),
+  role: String (default: "user"),
+  createdAt: Date (default: now)
+}
+```
+
+### Project Model
+```javascript
+{
+  image: String (required, Cloudinary URL),
+  name: String (required),
+  description: String (required),
+  createdAt: Date (default: now),
+  updatedAt: Date (default: now)
+}
+```
+
+### Client Model
+```javascript
+{
+  image: String (required, Cloudinary URL),
+  name: String (required),
+  description: String (required),
+  designation: String (required),
+  createdAt: Date (default: now),
+  updatedAt: Date (default: now)
+}
+```
+
+### ContactForm Model
+```javascript
+{
+  fullName: String (required),
+  email: String (required),
+  mobile: String (required),
+  city: String (required),
+  submittedAt: Date (default: now)
+}
+```
+
+### Newsletter Model
+```javascript
+{
+  email: String (required, unique),
+  subscribedAt: Date (default: now)
+}
+```
+
 ## API Endpoints
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `POST /api/auth/logout` - Logout
-- `GET /api/auth/me` - Get current user (Protected)
+### Authentication Routes (`/api/auth`)
 
-### Admin
-- `POST /api/admin/login` - Admin login
+| Method | Endpoint | Access | Description | Request Body |
+|--------|----------|--------|-------------|--------------|
+| POST | `/api/auth/register` | Public | Register new user | `{ "name": "John Doe", "email": "john@example.com", "password": "SecurePass123" }` |
+| POST | `/api/auth/login` | Public | User login | `{ "email": "john@example.com", "password": "SecurePass123" }` |
+| POST | `/api/auth/logout` | Public | Logout user | - |
+| GET | `/api/auth/me` | Protected | Get current user | - |
 
-### Projects (Public)
-- `GET /api/projects` - Get all projects
-- `GET /api/projects/:id` - Get single project
+### Admin Routes (`/api/admin`)
 
-### Projects (Admin)
-- `POST /api/admin/projects` - Create project
-- `GET /api/admin/projects` - Get all projects
-- `GET /api/admin/projects/:id` - Get single project
-- `PUT /api/admin/projects/:id` - Update project
-- `DELETE /api/admin/projects/:id` - Delete project
+| Method | Endpoint | Access | Description | Request Body |
+|--------|----------|--------|-------------|--------------|
+| POST | `/api/admin/login` | Public | Admin login | `{ "email": "admin@example.com", "password": "AdminPass123" }` |
 
-### Clients (Public)
-- `GET /api/clients` - Get all clients
-- `GET /api/clients/:id` - Get single client
+### Project Routes
 
-### Clients (Admin)
-- `POST /api/admin/clients` - Create client
-- `GET /api/admin/clients` - Get all clients
-- `GET /api/admin/clients/:id` - Get single client
-- `PUT /api/admin/clients/:id` - Update client
-- `DELETE /api/admin/clients/:id` - Delete client
+#### Public Routes (`/api/projects`)
 
-### Contact
-- `POST /api/contact` - Submit contact form
-- `GET /api/admin/contact` - Get all submissions (Admin)
-- `GET /api/admin/contact/:id` - Get single submission (Admin)
-- `DELETE /api/admin/contact/:id` - Delete submission (Admin)
+| Method | Endpoint | Access | Description | Request Body |
+|--------|----------|--------|-------------|--------------|
+| GET | `/api/projects` | Public | Get all projects | - |
+| GET | `/api/projects/:id` | Public | Get single project by ID | - |
 
-### Newsletter
-- `POST /api/newsletter/subscribe` - Subscribe to newsletter
-- `GET /api/admin/newsletters` - Get all subscribers (Admin)
-- `DELETE /api/admin/newsletters/:id` - Delete subscriber (Admin)
+#### Admin Routes (`/api/admin/projects`)
+
+| Method | Endpoint | Access | Description | Request Body |
+|--------|----------|--------|-------------|--------------|
+| POST | `/api/admin/projects` | Admin Only | Create new project | `multipart/form-data` - Fields: `name`, `description`, `image` (file) |
+| GET | `/api/admin/projects` | Admin Only | Get all projects | - |
+| GET | `/api/admin/projects/:id` | Admin Only | Get single project by ID | - |
+| PUT | `/api/admin/projects/:id` | Admin Only | Update project | `multipart/form-data` - Fields: `name`, `description`, `image` (optional) |
+| DELETE | `/api/admin/projects/:id` | Admin Only | Delete project | - |
+
+### Client Routes
+
+#### Public Routes (`/api/clients`)
+
+| Method | Endpoint | Access | Description | Request Body |
+|--------|----------|--------|-------------|--------------|
+| GET | `/api/clients` | Public | Get all clients | - |
+| GET | `/api/clients/:id` | Public | Get single client by ID | - |
+
+#### Admin Routes (`/api/admin/clients`)
+
+| Method | Endpoint | Access | Description | Request Body |
+|--------|----------|--------|-------------|--------------|
+| POST | `/api/admin/clients` | Admin Only | Create new client | `multipart/form-data` - Fields: `name`, `description`, `designation`, `image` (file) |
+| GET | `/api/admin/clients` | Admin Only | Get all clients | - |
+| GET | `/api/admin/clients/:id` | Admin Only | Get single client by ID | - |
+| PUT | `/api/admin/clients/:id` | Admin Only | Update client | `multipart/form-data` - Fields: `name`, `description`, `designation`, `image` (optional) |
+| DELETE | `/api/admin/clients/:id` | Admin Only | Delete client | - |
+
+### Contact Routes
+
+#### Public Route
+
+| Method | Endpoint | Access | Description | Request Body |
+|--------|----------|--------|-------------|--------------|
+| POST | `/api/contact` | Public | Submit contact form | `{ "fullName": "John Doe", "email": "john@example.com", "mobile": "+1234567890", "city": "New York" }` |
+
+#### Admin Routes (`/api/admin/contact`)
+
+| Method | Endpoint | Access | Description | Request Body |
+|--------|----------|--------|-------------|--------------|
+| GET | `/api/admin/contact` | Admin Only | Get all contact submissions | - |
+| GET | `/api/admin/contact/:id` | Admin Only | Get single contact submission | - |
+| DELETE | `/api/admin/contact/:id` | Admin Only | Delete contact submission | - |
+
+### Newsletter Routes
+
+#### Public Route
+
+| Method | Endpoint | Access | Description | Request Body |
+|--------|----------|--------|-------------|--------------|
+| POST | `/api/newsletter/subscribe` | Public | Subscribe to newsletter | `{ "email": "subscriber@example.com" }` |
+
+#### Admin Routes (`/api/admin/newsletters`)
+
+| Method | Endpoint | Access | Description | Request Body |
+|--------|----------|--------|-------------|--------------|
+| GET | `/api/admin/newsletters` | Admin Only | Get all newsletter subscribers | - |
+| DELETE | `/api/admin/newsletters/:id` | Admin Only | Delete subscriber | - |
+
+## Frontend Services
+
+### Authentication Service (`authService.js`)
+```javascript
+- register(userData)           // Register new user
+- login(credentials)            // User login
+- adminLogin(credentials)       // Admin login
+- logout()                      // Logout user
+- getCurrentUser()              // Get current authenticated user
+- isAuthenticated()             // Check if user is authenticated
+- getStoredUser()               // Get user from localStorage
+- isAdmin()                     // Check if user has admin role
+```
+
+### Project Service (`projectService.js`)
+```javascript
+- getAll()                      // Get all projects (public)
+- getById(id)                   // Get single project by ID
+```
+
+### Client Service (`clientService.js`)
+```javascript
+- getAll()                      // Get all clients (public)
+- getById(id)                   // Get single client by ID
+```
+
+### Contact Service (`contactService.js`)
+```javascript
+- submit(formData)              // Submit contact form
+```
+
+### Newsletter Service (`newsletterService.js`)
+```javascript
+- subscribe(data)               // Subscribe to newsletter
+```
+
+### Admin Service (`adminService.js`)
+
+#### Project Management
+```javascript
+- projects.create(formData)     // Create project (with image)
+- projects.getAll()             // Get all projects
+- projects.getById(id)          // Get project by ID
+- projects.update(id, formData) // Update project (with image)
+- projects.delete(id)           // Delete project
+```
+
+#### Client Management
+```javascript
+- clients.create(formData)      // Create client (with image)
+- clients.getAll()              // Get all clients
+- clients.getById(id)           // Get client by ID
+- clients.update(id, formData)  // Update client (with image)
+- clients.delete(id)            // Delete client
+```
+
+#### Contact Management
+```javascript
+- contacts.getAll()             // Get all contact submissions
+- contacts.getById(id)          // Get contact submission by ID
+- contacts.delete(id)           // Delete contact submission
+```
+
+#### Newsletter Management
+```javascript
+- newsletters.getAll()          // Get all subscribers
+- newsletters.delete(id)        // Delete subscriber
+```
 
 ## Default Admin Credentials
 
@@ -221,32 +388,74 @@ After seeding the database, use these credentials:
 ## Features in Detail
 
 ### Authentication System
-- JWT-based authentication
-- Cookie and localStorage token storage
-- Protected routes for admin access
-- Automatic token refresh on page reload
-- Role-based authorization (User/Admin)
+- **JWT-based authentication** with secure token generation
+- **Dual storage strategy**: Cookie and localStorage for token persistence
+- **Protected routes** with role-based access control (User/Admin)
+- **Automatic token refresh** on page reload
+- **Password hashing** using bcrypt (10 salt rounds)
+- **Email validation** with regex patterns
+- **Password strength requirements**:
+  - Minimum 6 characters
+  - At least one uppercase letter
+  - At least one lowercase letter
+  - At least one number
 
-### Image Upload
-- Cloudinary integration for cloud storage
-- Multer middleware for file handling
-- Image optimization and transformations
-- Automatic old image cleanup on updates
+### Image Upload System
+- **Cloudinary integration** for cloud-based image storage
+- **Multer middleware** for multipart/form-data handling
+- **Interactive Image Cropper** with two aspect ratios:
+  - Free Form: Custom dimensions
+  - Standard: 450 × 350 (recommended for projects and clients)
+- **Real-time crop preview** with adjustable crop area
+- **Canvas-based processing** for high-quality cropped images
+- **Image optimization** and automatic transformations
+- **Automatic cleanup**: Old images deleted when updating
+- **Supported formats**: JPEG, PNG, WebP
+- **File size validation**: Maximum 5MB per image
+- **Drag and drop** file upload support
 
 ### Admin Dashboard
-- Project management (CRUD operations)
-- Client testimonial management
-- Contact form submissions viewer
-- Newsletter subscriber management
-- Image upload for projects and clients
+- **Project Management**:
+  - Create, Read, Update, Delete operations
+  - Interactive image cropper with aspect ratio selection
+  - Rich text descriptions
+  - Image preview before upload
+  
+- **Client Management**:
+  - Testimonial CRUD operations
+  - Client image uploads with cropping
+  - Designation tracking
+  - Preview and change uploaded images
+  
+- **Contact Submissions**:
+  - View all contact form submissions
+  - Delete individual submissions
+  - Email and mobile tracking
+  
+- **Newsletter Management**:
+  - View all subscribers
+  - Remove subscribers
+  - Subscription date tracking
 
-### Landing Page
-- Smooth scroll navigation
-- Hero section with branding
-- Projects showcase with images
-- Client testimonials carousel
-- Contact form with validation
-- Newsletter subscription footer
+### Landing Page Components
+- **Hero Section**: Eye-catching introduction with branding
+- **Projects Showcase**: Grid display with images and descriptions
+- **Client Testimonials**: Carousel/slider with client feedback
+- **Contact Form**: 
+  - Full name, email, mobile, city fields
+  - Real-time validation
+  - Success/error feedback
+- **Newsletter Subscription**: 
+  - Email collection footer
+  - Validation and duplicate prevention
+
+### Form Validation
+- **Email Validation**: Proper regex pattern matching
+- **Phone Validation**: International format support (min 10 digits)
+- **Name Validation**: Minimum 2 characters, trimmed
+- **Real-time Feedback**: Error messages appear on blur/submit
+- **Visual Indicators**: Red borders for invalid fields
+- **Comprehensive Error Messages**: User-friendly guidance
 
 ## Scripts
 
