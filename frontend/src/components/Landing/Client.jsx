@@ -28,8 +28,10 @@ const Client = () => {
   if (loading) {
     return (
       <section className="py-20 bg-white">
-        <div className="flex items-center justify-center">
-          <Loader className="w-8 h-8 animate-spin text-[#C4A962]" />
+        <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+          <Loader className="w-12 h-12 animate-spin text-[#C4A962]" />
+          <p className="text-[#6B6B6B] text-lg font-medium">Loading testimonials...</p>
+          <p className="text-[#999999] text-sm">Please wait while we fetch the data</p>
         </div>
       </section>
     );
