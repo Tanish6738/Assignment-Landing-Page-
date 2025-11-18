@@ -196,7 +196,7 @@ Project/
 
 After seeding the database, use these credentials:
 - **Email**: admin@example.com
-- **Password**: admin123
+- **Password**: Root@1234
 
 ## Environment Variables
 
@@ -287,4 +287,4 @@ ISC
 
 ## Author
 
-Portfolio Management System
+Tanishq Chouhan
