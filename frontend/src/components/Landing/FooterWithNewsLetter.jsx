@@ -13,14 +13,19 @@ const FooterWithNewsLetter = () => {
     setError('');
     setSuccess(false);
 
-    if (!email) {
+    if (!email.trim()) {
       setError('Please enter your email address');
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address');
+      setError('Please enter a valid email address (e.g., user@example.com)');
+      return;
+    }
+
+    if (email.length > 100) {
+      setError('Email address is too long');
       return;
     }
 

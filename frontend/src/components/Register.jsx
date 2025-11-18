@@ -15,6 +15,21 @@ const Register = () => {
   });
   const [localError, setLocalError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    const errors = [];
+    if (password.length < 6) errors.push('at least 6 characters');
+    if (!/[A-Z]/.test(password)) errors.push('one uppercase letter');
+    if (!/[a-z]/.test(password)) errors.push('one lowercase letter');
+    if (!/[0-9]/.test(password)) errors.push('one number');
+    return errors;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,25 +38,47 @@ const Register = () => {
       [name]: value
     }));
     setLocalError('');
+    setFieldErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLocalError('');
     setSuccessMessage('');
+    setFieldErrors({});
 
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-      setLocalError('Please fill in all fields');
-      return;
+    const errors = {};
+
+    if (!formData.name.trim()) {
+      errors.name = 'Name is required';
+    } else if (formData.name.trim().length < 2) {
+      errors.name = 'Name must be at least 2 characters';
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      setLocalError('Passwords do not match');
-      return;
+    if (!formData.email) {
+      errors.email = 'Email is required';
+    } else if (!validateEmail(formData.email)) {
+      errors.email = 'Please enter a valid email address';
     }
 
-    if (formData.password.length < 6) {
-      setLocalError('Password must be at least 6 characters long');
+    if (!formData.password) {
+      errors.password = 'Password is required';
+    } else {
+      const passwordErrors = validatePassword(formData.password);
+      if (passwordErrors.length > 0) {
+        errors.password = `Password must contain ${passwordErrors.join(', ')}`;
+      }
+    }
+
+    if (!formData.confirmPassword) {
+      errors.confirmPassword = 'Please confirm your password';
+    } else if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      setLocalError('Please fix the errors above');
       return;
     }
 
@@ -112,12 +149,17 @@ const Register = () => {
                     name="name"
                     type="text"
                     required
-                    className="block w-full pl-10 pr-3 py-3 border border-[#E8DCC4] rounded-xl bg-[#FAF8F3] text-[#4A4A4A] placeholder-[#9B9B9B] focus:outline-none focus:ring-2 focus:ring-[#C4A962] focus:border-transparent transition-all"
+                    className={`block w-full pl-10 pr-3 py-3 border rounded-xl bg-[#FAF8F3] text-[#4A4A4A] placeholder-[#9B9B9B] focus:outline-none focus:ring-2 focus:border-transparent transition-all ${
+                      fieldErrors.name ? 'border-[#D4534F] focus:ring-[#D4534F]' : 'border-[#E8DCC4] focus:ring-[#C4A962]'
+                    }`}
                     placeholder="Enter your full name"
                     value={formData.name}
                     onChange={handleChange}
                   />
                 </div>
+                {fieldErrors.name && (
+                  <p className="mt-1 text-sm text-[#D4534F]">{fieldErrors.name}</p>
+                )}
               </div>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-[#4A4A4A] mb-2">
@@ -133,12 +175,17 @@ const Register = () => {
                     type="email"
                     autoComplete="email"
                     required
-                    className="block w-full pl-10 pr-3 py-3 border border-[#E8DCC4] rounded-xl bg-[#FAF8F3] text-[#4A4A4A] placeholder-[#9B9B9B] focus:outline-none focus:ring-2 focus:ring-[#C4A962] focus:border-transparent transition-all"
+                    className={`block w-full pl-10 pr-3 py-3 border rounded-xl bg-[#FAF8F3] text-[#4A4A4A] placeholder-[#9B9B9B] focus:outline-none focus:ring-2 focus:border-transparent transition-all ${
+                      fieldErrors.email ? 'border-[#D4534F] focus:ring-[#D4534F]' : 'border-[#E8DCC4] focus:ring-[#C4A962]'
+                    }`}
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleChange}
                   />
                 </div>
+                {fieldErrors.email && (
+                  <p className="mt-1 text-sm text-[#D4534F]">{fieldErrors.email}</p>
+                )}
               </div>
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-[#4A4A4A] mb-2">
@@ -154,12 +201,17 @@ const Register = () => {
                     type="password"
                     autoComplete="new-password"
                     required
-                    className="block w-full pl-10 pr-3 py-3 border border-[#E8DCC4] rounded-xl bg-[#FAF8F3] text-[#4A4A4A] placeholder-[#9B9B9B] focus:outline-none focus:ring-2 focus:ring-[#C4A962] focus:border-transparent transition-all"
-                    placeholder="Minimum 6 characters"
+                    className={`block w-full pl-10 pr-3 py-3 border rounded-xl bg-[#FAF8F3] text-[#4A4A4A] placeholder-[#9B9B9B] focus:outline-none focus:ring-2 focus:border-transparent transition-all ${
+                      fieldErrors.password ? 'border-[#D4534F] focus:ring-[#D4534F]' : 'border-[#E8DCC4] focus:ring-[#C4A962]'
+                    }`}
+                    placeholder="Must contain uppercase, lowercase, number"
                     value={formData.password}
                     onChange={handleChange}
                   />
                 </div>
+                {fieldErrors.password && (
+                  <p className="mt-1 text-sm text-[#D4534F]">{fieldErrors.password}</p>
+                )}
               </div>
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#4A4A4A] mb-2">
@@ -175,12 +227,17 @@ const Register = () => {
                     type="password"
                     autoComplete="new-password"
                     required
-                    className="block w-full pl-10 pr-3 py-3 border border-[#E8DCC4] rounded-xl bg-[#FAF8F3] text-[#4A4A4A] placeholder-[#9B9B9B] focus:outline-none focus:ring-2 focus:ring-[#C4A962] focus:border-transparent transition-all"
+                    className={`block w-full pl-10 pr-3 py-3 border rounded-xl bg-[#FAF8F3] text-[#4A4A4A] placeholder-[#9B9B9B] focus:outline-none focus:ring-2 focus:border-transparent transition-all ${
+                      fieldErrors.confirmPassword ? 'border-[#D4534F] focus:ring-[#D4534F]' : 'border-[#E8DCC4] focus:ring-[#C4A962]'
+                    }`}
                     placeholder="Re-enter your password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                   />
                 </div>
+                {fieldErrors.confirmPassword && (
+                  <p className="mt-1 text-sm text-[#D4534F]">{fieldErrors.confirmPassword}</p>
+                )}
               </div>
             </div>
 

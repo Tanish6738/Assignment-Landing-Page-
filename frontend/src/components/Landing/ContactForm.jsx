@@ -27,19 +27,45 @@ const ContactForm = () => {
     setError('');
     setSuccess(false);
 
-    if (!formData.fullName || !formData.email || !formData.mobile || !formData.city) {
-      setError('Please fill in all fields');
+    if (!formData.fullName.trim()) {
+      setError('Please enter your full name');
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (formData.fullName.trim().length < 2) {
+      setError('Name must be at least 2 characters');
+      return;
+    }
+
+    if (!formData.email) {
+      setError('Please enter your email address');
+      return;
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
+      setError('Please enter a valid email address (e.g., user@example.com)');
       return;
     }
 
-    if (formData.mobile.length < 10) {
-      setError('Please enter a valid mobile number');
+    if (!formData.mobile) {
+      setError('Please enter your mobile number');
+      return;
+    }
+
+    const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/;
+    if (!phoneRegex.test(formData.mobile) || formData.mobile.replace(/\D/g, '').length < 10) {
+      setError('Please enter a valid mobile number (at least 10 digits)');
+      return;
+    }
+
+    if (!formData.city.trim()) {
+      setError('Please enter your city');
+      return;
+    }
+
+    if (formData.city.trim().length < 2) {
+      setError('City name must be at least 2 characters');
       return;
     }
 

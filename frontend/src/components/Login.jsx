@@ -33,6 +33,17 @@ const Login = () => {
       return;
     }
 
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(formData.email)) {
+      setLocalError('Please enter a valid email address');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setLocalError('Password must be at least 6 characters');
+      return;
+    }
+
     try {
       await login(formData);
       setSuccessMessage('Login successful! Redirecting...');
