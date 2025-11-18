@@ -2,6 +2,37 @@
 
 A full-stack web application for managing a portfolio website with admin dashboard. Built with React, Node.js, Express, and MongoDB.
 
+## 📋 Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Running the Application](#running-the-application)
+- [Project Structure](#project-structure)
+- [Database Models](#database-models)
+- [API Endpoints](#api-endpoints)
+- [Frontend Services](#frontend-services)
+- [Features in Detail](#features-in-detail)
+- [Scripts](#scripts)
+- [Security Features](#security-features)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
+
+## 🎯 Overview
+
+The Portfolio Management System is a modern, full-stack web application designed to help businesses and professionals showcase their work, manage client testimonials, and engage with visitors. The platform features a beautiful landing page for public visitors and a comprehensive admin dashboard for content management.
+
+### Key Highlights
+- 🎨 Modern, responsive UI with Tailwind CSS
+- 🔐 Secure JWT-based authentication
+- 🖼️ Advanced image cropping and upload
+- 📊 Comprehensive admin dashboard
+- 📧 Contact form and newsletter management
+- ☁️ Cloud-based image storage with Cloudinary
+- 🚀 Fast performance with React 19 and Vite
+
 ## Features
 
 ### Frontend
@@ -490,10 +521,73 @@ npm run lint     # Run ESLint
 - Safari (latest)
 - Edge (latest)
 
-## License
+## 🚀 Deployment
+
+### Frontend Deployment (Vercel/Netlify)
+1. Build the production bundle:
+   ```bash
+   cd frontend
+   npm run build
+   ```
+2. Deploy the `dist` folder to your hosting service
+3. Update environment variables with production API URL
+
+### Backend Deployment (Heroku/Railway/Render)
+1. Set environment variables on your hosting platform
+2. Ensure MongoDB connection string is configured
+3. Deploy using Git or Docker
+4. Run database migrations if needed
+
+### Environment Configuration
+- Update `VITE_API_URL` in frontend to point to production backend
+- Update `CLIENT_URL` in backend to point to production frontend
+- Configure Cloudinary credentials for production
+- Use strong `JWT_SECRET` in production
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### Development Guidelines
+- Follow the existing code style
+- Write meaningful commit messages
+- Add comments for complex logic
+- Update documentation as needed
+- Test your changes thoroughly
+
+## 📄 License
 
 ISC
 
-## Author
+## 👨‍💻 Author
 
-Tanishq Chouhan
+**Tanishq Chouhan**
+
+## 🙏 Acknowledgments
+
+- React team for the amazing framework
+- Express.js community
+- MongoDB team
+- Cloudinary for image hosting
+- All open-source contributors
+
+## 📞 Support
+
+For support, email: [your-email@example.com]
+
+## 🔗 Links
+
+- [Live Demo](#) - (Add your demo link)
+- [Documentation](./DESCRIPTION.md)
+- [API Documentation](#api-endpoints)
+- [GitHub Repository](https://github.com/Tanish6738/Assignment-Landing-Page-)
+
+---
+
+**Made with ❤️ by Tanishq Chouhan**
